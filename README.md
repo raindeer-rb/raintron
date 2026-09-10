@@ -2,9 +2,7 @@
 
 <a href="https://github.com/raindeer-rb/raintron" title="GitHub"><img src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white" alt="GitHub repo" height="18"></a>
 
-Electron for Ruby. Add `raintron` to an existing [Raindeer](https://github.com/raindeer-rb/raindeer) app's Gemfile, run `raintron install`, and `bin/desktop` opens your app in a native window instead of a browser tab. `raintron press` packages the whole thing into a single cross-platform executable via [Tebako](https://github.com/tamatebako/tebako) -- no system Ruby required on the end user's machine.
-
-Like real Electron, raintron is something you add to an app you already have, not a project generator -- `rain new` already does that job. Its runtime logic (window lifecycle, environment-compatibility shims) lives in this gem, so fixes reach every consuming app via `bundle update`, not by regenerating files.
+Raintron enables desktop applications to be made with web apps via [Raindeer](https://github.com/raindeer-rb/raindeer). Raintron uses [Tebako](https://github.com/tamatebako/tebako) so no system Ruby is required on the end user's machine.
 
 ## Installation
 
@@ -14,17 +12,18 @@ Add to an existing Raindeer app's Gemfile:
 gem 'raintron'
 ```
 
+Run commands:
 ```
 bundle install
 bundle exec raintron install
 bundle exec bin/desktop
 ```
 
-`webview_ruby` (raintron's desktop-window dependency) compiles a native extension against your platform's GUI toolkit. If `bundle install` fails there, see **Prerequisites** below, or run `bundle exec raintron doctor` for a diagnosis.
+If `bundle install` fails there, see **Prerequisites** below, or run `bundle exec raintron doctor` for a diagnosis.
 
 ## CLI
 
-### `raintron install [name]`
+### `raintron install :app_name`
 
 Wires desktop-app capability into the Raindeer app in the current directory. Idempotent -- re-running skips files that already exist.
 
@@ -40,7 +39,7 @@ Wraps `tebako press` with sensible defaults, so you don't need to memorize its f
 
 Flags: `--ruby VERSION`, `--output PATH`.
 
-### `raintron icons [name]`
+### `raintron icons :app_name`
 
 Regenerates icons standalone (e.g. after swapping in a new logo), without touching anything else `install` writes.
 
