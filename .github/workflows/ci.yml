@@ -16,9 +16,16 @@ jobs:
         # verified directly against a real failed CI run and the gem's upstream
         # source, not assumed. 22.04 is still a supported LTS (through 2027) and
         # still has the 4.0 package, so pin to it until webview_ruby targets 4.1.
-        os: [ubuntu-22.04, macos-latest]
+        os: [ubuntu-22.04, macos-latest, windows-latest]
         ruby: ['3.3', '3.4']
     runs-on: ${{ matrix.os }}
+    # Windows is best-effort, not expected to pass yet: webview_ruby's own
+    # native-extension Rakefile has no Windows compile path at all (see its
+    # ext/Rakefile upstream -- only darwin/linux branches exist). Kept in the
+    # matrix rather than left out, so this leg starts reporting green on its own
+    # the moment that gap closes, instead of relying on someone remembering to
+    # re-add it.
+    continue-on-error: ${{ matrix.os == 'windows-latest' }}
     steps:
       - uses: actions/checkout@v4
 
