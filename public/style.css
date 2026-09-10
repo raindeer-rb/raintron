@@ -1,0 +1,131 @@
+/***** TYPOGRAPHY *****/
+
+:root {
+  --pico-font-size: 1rem;
+  --pico-accordion-open-summary-color: #fff;
+}
+
+h1 {
+  margin-bottom: calc(var(--pico-typography-spacing-vertical) * 2);
+}
+
+/***** LAYOUT *****/
+
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1000px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container {
+    max-width: 1200px;
+  }
+}
+
+header {
+  background-color: #000;
+
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 30px;
+    padding: 1rem;
+  }
+
+  #favicon,
+  #favicon img {
+    height: 100%;
+  }
+
+  #navbar {
+    li {
+      a {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        padding: 0 2rem;
+      }
+    }
+  }
+}
+
+aside#sidebar {
+  width: 14rem;
+  float: left;
+  padding: 1rem;
+
+  nav {
+    ul:first-of-type {
+      margin-left: 0; /* Override Pico. */
+    }
+    li {
+      padding: calc(var(--pico-nav-element-spacing-vertical) * .25) var(--pico-nav-element-spacing-horizontal);
+      padding-left: calc(var(--pico-nav-element-spacing-vertical) * 1);
+      border-left: 1px solid #353841;
+      a {
+        color: #d4d4d4;
+        &:hover {
+          color: var(--pico-primary);
+        }
+      }
+    }
+  }
+  summary {
+    list-style-type: none;
+    cursor: pointer;
+    font-weight: bold;
+  }
+}
+
+#content {
+  overflow: auto;
+  padding: 1rem;
+}
+
+footer {
+  margin-top: 2rem;
+  border-top: 1px solid #000;
+  ul {
+    display: flex;
+    justify-content: center;
+    li {
+      margin-left: 2rem;
+    }
+  }
+}
+
+/***** COMPONENTS *****/
+
+.slogan {
+  margin-bottom: var(--pico-block-spacing-vertical);
+  padding: var(--pico-block-spacing-vertical) 0;
+  border: 5px solid violet;
+  border-left-width: 0;
+  border-right-width: 0;
+
+  color: violet;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: bold;
+  font-size: 1.5rem;
+  text-align: center;
+  line-height: 2.25rem;
+}
+
+.highlight {
+  border-radius: 10px;
+}
+
+/***** DASHBOARD *****/
+
+.stat {
+  .number {
+    text-align: center;
+    font-size: 4rem;
+    font-weight: bold;
+  }
+  footer {
+    text-align: center;
+  }
+}

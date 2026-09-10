@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'bundler/setup'
+require 'webview_ruby'
+require 'socket'
+require 'timeout'
+
+HOST = '127.0.0.1'
+PORT = 4133
+
+# The server runs as a real child process, not an in-process Thread: webview_ruby's
+# native run loop holds Ruby's GVL for as long as the window is open, which starves
+# any Ruby Thread (like raindeer's Async reactor) in the same process.
+server_pid = Process.spawn('bin/server')
+
+at_exit do
+  Process.kill('TERM', server_pid)
+  Process.wait(server_pid)
+rescue Errno::ESRCH, Errno::ECHILD
+  nil
+end
+
+Timeout.timeout(10) do
+  loop do
+    TCPSocket.new(HOST, PORT).close
+    break
+  rescue Errno::ECONNREFUSED
+    sleep 0.05
+  end
+end
+
+webview = WebviewRuby::Webview.new
+webview.set_title('app_name')
+webview.set_size(900, 600)
+webview.navigate("http://#{HOST}:#{PORT}/")
+webview.run
+webview.destroy
