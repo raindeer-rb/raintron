@@ -2,8 +2,7 @@
 
 source 'https://rubygems.org'
 
-gem 'raindeer'
-gem 'webview_ruby'
+gemspec
 
 group :development do
   gem 'irb'
@@ -11,7 +10,6 @@ group :development do
   gem 'rubocop'
 end
 
-group :testing do
+group :test do
   gem 'rspec'
-  gem 'timecop'
 end

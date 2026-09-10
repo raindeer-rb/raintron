@@ -1,22 +1,19 @@
 # frozen_string_literal: true
 
-require 'timecop'
+require 'raintron'
 
 RSpec.configure do |config|
-  # Enable flags like --only-failures and --next-failure
-  config.example_status_persistence_file_path = '.rspec_status'
-
-  # Disable RSpec exposing methods globally on `Module` and `main`
-  config.disable_monkey_patching!
-
   config.expect_with :rspec do |expectations|
-    expectations.syntax = :expect
-    # Large diff when expected objects don't match.
-    expectations.max_formatted_output_length = 10_000
+    expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end
-end
 
-LowType.configure do |config|
-  config.output_mode = :value
-  config.output_size = 100
+  config.mock_with :rspec do |mocks|
+    mocks.verify_partial_doubles = true
+  end
+
+  config.shared_context_metadata_behavior = :apply_to_host_groups
+  config.filter_run_when_matching :focus
+  config.disable_monkey_patching!
+  config.order = :random
+  Kernel.srand config.seed
 end

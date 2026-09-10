@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'raintron'
+
+# This file is deliberately thin -- all reusable logic (fork/webview lifecycle, the
+# tty/Tebako compatibility shims) lives in the raintron gem, so fixes ship via
+# `bundle update` rather than by regenerating this file. host/port are read live from
+# config/config.yaml on every run (not baked in at generation time), so they always
+# match whatever `rain server` actually uses.
+app_root = File.expand_path('..', __dir__)
+
+Raintron.launch(
+  title: '<%= app_name %>',
+  size: [<%= width %>, <%= height %>],
+  host: Raintron::AppConfig.host(app_root:),
+  port: Raintron::AppConfig.port(app_root:),
+  app_root:
+) do
+  require_relative '../config/boot'
+  Providers['low.loop'].start
+end

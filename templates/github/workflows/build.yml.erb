@@ -1,0 +1,91 @@
+name: Build cross-platform executables
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  RUBY_VERSION: "<%= ruby_version %>"
+
+jobs:
+  press:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            name: macos
+          - os: ubuntu-latest
+            name: linux
+          - os: windows-latest
+            name: windows
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # webview_ruby's own native-extension Rakefile only has compile flags for
+      # darwin and linux (see ext/Rakefile in the gem) -- it has no Windows path at
+      # all today. Tebako's Windows release leg is also still "in flight" upstream.
+      # Both remaining steps on this leg are best-effort so the workflow doesn't
+      # block on a combination nobody currently ships, but starts passing on its
+      # own the moment either upstream gap closes.
+
+      - name: Install Linux build prerequisites
+        if: matrix.name == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential pkg-config libgtk-3-dev libwebkit2gtk-4.0-dev
+
+      - name: Install Tebako
+        if: matrix.name != 'windows'
+        shell: bash
+        run: |
+          curl -fsSL https://tebako.org/install.sh -o /tmp/tebako_install.sh
+          # Not `sh`: macOS's /bin/sh is an ancient bash (3.2) that mis-parses a
+          # multibyte character in the installer's own output strings. dash (present
+          # on macOS and Linux runners) doesn't have that bug; see install.sh's own
+          # shebang note if this ever needs revisiting.
+          dash /tmp/tebako_install.sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Install Tebako (Windows, best-effort)
+        if: matrix.name == 'windows'
+        shell: bash
+        continue-on-error: true
+        run: |
+          curl -fsSL https://tebako.org/install.sh -o /tmp/tebako_install.sh
+          bash /tmp/tebako_install.sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Press
+        if: matrix.name != 'windows'
+        shell: bash
+        run: |
+          mkdir -p dist
+          tebako press -r . -e bin/desktop -o "dist/<%= app_name %>-${{ matrix.name }}" -R "$RUBY_VERSION" --format dwarfs
+
+      - name: Press (Windows, best-effort)
+        if: matrix.name == 'windows'
+        shell: bash
+        continue-on-error: true
+        run: |
+          mkdir -p dist
+          tebako press -r . -e bin/desktop -o "dist/<%= app_name %>-windows.exe" -R "$RUBY_VERSION" --format dwarfs
+
+      - name: Upload artifact
+        if: matrix.name != 'windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: <%= app_name %>-${{ matrix.name }}
+          path: dist/<%= app_name %>-${{ matrix.name }}*
+          if-no-files-found: error
+
+      - name: Upload artifact (Windows, best-effort)
+        if: matrix.name == 'windows'
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: <%= app_name %>-windows
+          path: dist/<%= app_name %>-windows.exe
+          if-no-files-found: ignore

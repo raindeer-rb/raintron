@@ -1,11 +1,14 @@
-# Raindeer.
+# Raintron.
 /build
 /coverage/
+/dist/
 /doc/
 /pkg/
 /spec/reports/
 /tmp/
 .rspec_status
+Gemfile.lock
+*.gem
 
 # OS.
 .DS_Store
