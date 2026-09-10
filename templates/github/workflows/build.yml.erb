@@ -16,7 +16,13 @@ jobs:
         include:
           - os: macos-latest
             name: macos
-          - os: ubuntu-latest
+          # Not ubuntu-latest: Ubuntu 24.04 dropped the libwebkit2gtk-4.0-dev
+          # package entirely (only 4.1 dev headers ship now), and webview_ruby's
+          # own native extension Rakefile hardcodes a `pkg-config ... webkit2gtk-4.0`
+          # query -- verified directly against a real failed CI run and the gem's
+          # upstream source. 22.04 is still a supported LTS (through 2027) and still
+          # has the 4.0 package, so pin to it until webview_ruby targets 4.1.
+          - os: ubuntu-22.04
             name: linux
           - os: windows-latest
             name: windows
