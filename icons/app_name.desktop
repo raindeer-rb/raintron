@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=app_name
+Comment=Raindeer desktop app
+# Update this to wherever the packed executable actually gets installed
+# (e.g. /usr/local/bin/app_name or ~/.local/bin/app_name).
+Exec=/usr/local/bin/app_name
+Icon=/usr/local/share/icons/app_name.png
+Terminal=false
+Categories=Utility;
