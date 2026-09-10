@@ -96,7 +96,8 @@ module Raintron
         return unless RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/
 
         warn 'warning: Tebako\'s Windows release leg is still "in flight" upstream, and ' \
-             "webview_ruby's own native-extension build has no Windows path at all today. " \
+             "webview_ruby's own native-extension build fails under Windows' MinGW toolchain " \
+             '(its Edge backend needs C++/WinRT headers only MSVC + the Windows SDK provide). ' \
              'This press is not expected to succeed yet.'
       end
     end

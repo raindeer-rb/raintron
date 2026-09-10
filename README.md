@@ -56,7 +56,7 @@ Checks native-toolkit prerequisites for `webview_ruby` on demand.
 
 - **macOS**: Xcode Command Line Tools (`xcode-select --install`).
 - **Linux**: GTK3 + WebKit2GTK dev headers, e.g. Debian/Ubuntu: `sudo apt-get install -y build-essential libgtk-3-dev libwebkit2gtk-4.0-dev`.
-- **Windows**: not supported today -- `webview_ruby`'s own native-extension build has no Windows compile path, independent of Tebako.
+- **Windows**: not supported today -- confirmed via a real CI run, not assumed. `webview_ruby` does attempt a Windows build (via `ffi-compiler`'s generic MinGW path), but `webview.h`'s Windows/Edge backend `#include`s `winrt/Windows.Foundation.Collections.h`, a C++/WinRT header that isn't available under the MinGW toolchain RubyInstaller for Windows ships -- it needs MSVC + the Windows SDK instead. Independent of Tebako's own Windows gap.
 
 `raintron install` inserts a toolkit check at the top of your Gemfile, which prints an actionable message instead of a cryptic compiler error buried in `bundle install` output -- but only protects *subsequent* installs, since the very first compile of `webview_ruby` happens before `raintron install` can ever run. Run `raintron doctor` beforehand if you want to check first. (This check is a small self-contained snippet, not a call into raintron's own code: Bundler resolves and activates gems *after* evaluating the whole Gemfile, so a Gemfile can't `require` a gem declared in that same Gemfile.)
 

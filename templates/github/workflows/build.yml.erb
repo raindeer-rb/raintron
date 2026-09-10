@@ -30,9 +30,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # webview_ruby's own native-extension Rakefile only has compile flags for
-      # darwin and linux (see ext/Rakefile in the gem) -- it has no Windows path at
-      # all today. Tebako's Windows release leg is also still "in flight" upstream.
+      # webview_ruby's Windows build attempts to compile via ffi-compiler's generic
+      # MinGW path, but fails -- confirmed via a real CI run, not assumed:
+      # webview.h's Windows/Edge backend #includes winrt/Windows.Foundation.Collections.h,
+      # a C++/WinRT header the MinGW toolchain RubyInstaller for Windows ships
+      # doesn't provide (needs MSVC + the Windows SDK instead). Tebako's Windows
+      # release leg is also still "in flight" upstream, independently.
       # Both remaining steps on this leg are best-effort so the workflow doesn't
       # block on a combination nobody currently ships, but starts passing on its
       # own the moment either upstream gap closes.

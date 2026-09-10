@@ -19,12 +19,13 @@ jobs:
         os: [ubuntu-22.04, macos-latest, windows-latest]
         ruby: ['3.3', '3.4']
     runs-on: ${{ matrix.os }}
-    # Windows is best-effort, not expected to pass yet: webview_ruby's own
-    # native-extension Rakefile has no Windows compile path at all (see its
-    # ext/Rakefile upstream -- only darwin/linux branches exist). Kept in the
-    # matrix rather than left out, so this leg starts reporting green on its own
-    # the moment that gap closes, instead of relying on someone remembering to
-    # re-add it.
+    # Windows is best-effort, not expected to pass yet -- confirmed via a real run
+    # of this exact leg, not assumed: webview_ruby attempts a Windows build (via
+    # ffi-compiler's generic MinGW path), but webview.h's Windows/Edge backend
+    # #includes winrt/Windows.Foundation.Collections.h, a C++/WinRT header MinGW
+    # (what RubyInstaller for Windows ships) doesn't provide -- that needs MSVC +
+    # the Windows SDK instead. Kept in the matrix rather than left out, so this
+    # leg starts reporting green on its own the moment that gap closes upstream.
     continue-on-error: ${{ matrix.os == 'windows-latest' }}
     steps:
       - uses: actions/checkout@v4
